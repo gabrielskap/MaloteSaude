@@ -1,0 +1,6 @@
+{
+  "name": "Malote Saúde",
+  "description": "Sistema de gestão e rastreamento de entregas por malote para operações logísticas de planos de saúde.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
