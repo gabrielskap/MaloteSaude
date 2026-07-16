@@ -238,10 +238,10 @@ export default function MinhasEntregas() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F1F5F9] py-8 px-4 flex flex-col items-center justify-center font-sans select-none relative">
-      
+    <div className="min-h-screen bg-[#F1F5F9] p-0 sm:py-8 sm:px-4 flex flex-col items-center justify-center font-sans select-none relative">
+
       {/* Back button to go to main admin console */}
-      <div className="mb-4 text-center">
+      <div className="mb-4 pt-4 sm:pt-0 text-center">
         <button
           onClick={() => navigate("/")}
           className="inline-flex items-center gap-2 bg-[#0F6E6E] text-white hover:bg-[#0C5A5A] text-xs font-bold px-4 py-2 rounded-full shadow-md transition-all cursor-pointer"
@@ -250,17 +250,17 @@ export default function MinhasEntregas() {
         </button>
       </div>
 
-      {/* SMARTPHONE CONTAINER MOLDURA */}
-      <div className="max-w-[420px] w-full min-h-[850px] bg-[#F8FAFC] rounded-[48px] border-[14px] border-[#0F172A] shadow-2xl relative overflow-hidden flex flex-col text-slate-800 pb-20">
-        
-        {/* Notch & Top Speaker bar */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-6 bg-[#0F172A] rounded-b-2xl z-50 flex items-center justify-center gap-1.5">
+      {/* SMARTPHONE CONTAINER MOLDURA — full screen on mobile, decorative frame from sm: up */}
+      <div className="w-full min-h-dvh rounded-none border-0 shadow-none sm:max-w-[420px] sm:min-h-[850px] sm:rounded-[48px] sm:border-[14px] sm:border-[#0F172A] sm:shadow-2xl bg-[#F8FAFC] relative overflow-hidden flex flex-col text-slate-800 pb-20">
+
+        {/* Notch & Top Speaker bar (desktop mockup only) */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-6 bg-[#0F172A] rounded-b-2xl z-50 hidden sm:flex items-center justify-center gap-1.5">
           <div className="w-12 h-1 bg-slate-800 rounded-full" />
           <div className="w-2.5 h-2.5 bg-slate-900 rounded-full border border-slate-800" />
         </div>
 
-        {/* Status bar details (time, network, battery) */}
-        <div className="bg-[#F8FAFC] h-10 px-6 pt-2 flex items-center justify-between text-[11px] font-bold text-slate-500 select-none z-30">
+        {/* Status bar details (time, network, battery) (desktop mockup only) */}
+        <div className="bg-[#F8FAFC] h-10 px-6 pt-2 hidden sm:flex items-center justify-between text-[11px] font-bold text-slate-500 select-none z-30">
           <span>09:00</span>
           <div className="flex items-center gap-1.5">
             <span>5G</span>

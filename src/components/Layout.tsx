@@ -1,25 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { 
-  LayoutGrid, 
-  Mail, 
-  Truck, 
-  Share2, 
-  AlertCircle, 
-  Bike, 
-  FileText, 
-  BarChart2, 
-  Settings, 
-  ChevronDown, 
-  Calendar, 
-  SlidersHorizontal, 
+import {
+  LayoutGrid,
+  Mail,
+  Truck,
+  Share2,
+  AlertCircle,
+  Bike,
+  FileText,
+  BarChart2,
+  Settings,
+  ChevronDown,
+  Calendar,
+  SlidersHorizontal,
   Bell,
   ExternalLink,
   ChevronRight,
   Check,
   Play,
   RotateCcw,
-  X
+  X,
+  Menu
 } from 'lucide-react';
 import { useMalote } from '../context/MaloteContext';
 import { motion, AnimatePresence } from 'motion/react';
@@ -33,6 +34,12 @@ export default function AdminLayout({ children }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Close the mobile drawer whenever the route changes
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
 
   const getPermission = (actionKey: string, currentRole: string) => {
     let colName = 'Admin';
@@ -155,11 +162,32 @@ export default function AdminLayout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen flex text-[#0F172A] font-sans bg-[#F7F9FB]">
       
-      {/* 260px Fixed Sidebar */}
-      <aside className="w-[260px] fixed top-0 bottom-0 left-0 bg-white border-r border-[#E6EAF0] flex flex-col justify-between z-10 select-none">
+      {/* Mobile drawer backdrop */}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSidebarOpen(false)}
+            className="fixed inset-0 bg-black/40 z-30 lg:hidden"
+          />
+        )}
+      </AnimatePresence>
+
+      {/* 260px Fixed Sidebar — off-canvas drawer on mobile */}
+      <aside className={`w-[260px] fixed top-0 bottom-0 left-0 bg-white border-r border-[#E6EAF0] flex flex-col justify-between z-40 select-none overflow-y-auto transition-transform duration-200 ${sidebarOpen ? '' : 'max-lg:-translate-x-full'}`}>
         <div>
           {/* Brand Logo and Slogan */}
-          <div className="p-6 pb-4 border-b border-[#F1F5F9]">
+          <div className="p-6 pb-4 border-b border-[#F1F5F9] relative">
+            {/* Close drawer button (mobile only) */}
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="lg:hidden absolute top-3 right-3 w-8 h-8 rounded-lg flex items-center justify-center text-[#64748B] hover:bg-slate-50 cursor-pointer"
+              aria-label="Fechar menu"
+            >
+              <X size={16} />
+            </button>
             <div className="flex items-center gap-3">
               {/* Logo custom visual element */}
               <div className="w-10 h-10 rounded-[10px] bg-gradient-to-br from-[#2B7FD4] to-[#1E6BB8] flex items-center justify-center relative shadow-sm shrink-0">
@@ -320,33 +348,43 @@ export default function AdminLayout({ children }: LayoutProps) {
       </aside>
 
       {/* Main Panel Area */}
-      <div className="flex-1 ml-[260px] flex flex-col min-h-screen">
-        
+      <div className="flex-1 min-w-0 lg:ml-[260px] flex flex-col min-h-screen">
+
         {/* Top Header Section (Topo) */}
-        <header className="h-[80px] border-b border-[#E6EAF0] bg-white px-8 flex items-center justify-between shrink-0 select-none">
-          {/* Title + Subtitle */}
-          <div>
-            <h2 className="text-[24px] font-semibold text-[#0F172A] font-display leading-tight">
-              {headerInfo.title}
-            </h2>
-            <p className="text-xs text-[#64748B] mt-0.5 font-sans">
-              {headerInfo.subtitle}
-            </p>
+        <header className="min-h-[64px] lg:h-[80px] border-b border-[#E6EAF0] bg-white px-4 sm:px-6 lg:px-8 py-2 flex items-center justify-between gap-3 shrink-0 select-none">
+          {/* Hamburger + Title + Subtitle */}
+          <div className="flex items-center gap-3 min-w-0">
+            {/* Open drawer button (mobile only) */}
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="lg:hidden w-10 h-10 bg-white border border-[#E6EAF0] hover:bg-slate-50 rounded-xl flex items-center justify-center text-[#475569] cursor-pointer transition-all shrink-0"
+              aria-label="Abrir menu"
+            >
+              <Menu size={18} />
+            </button>
+            <div className="min-w-0">
+              <h2 className="text-lg lg:text-[24px] font-semibold text-[#0F172A] font-display leading-tight truncate">
+                {headerInfo.title}
+              </h2>
+              <p className="text-xs text-[#64748B] mt-0.5 font-sans hidden md:block">
+                {headerInfo.subtitle}
+              </p>
+            </div>
           </div>
 
           {/* Right Action buttons */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {/* Date Select Button showing 26 de maio de 2025 */}
-            <div className="bg-[#F8FAFC] border border-[#E6EAF0] hover:border-gray-300 rounded-xl px-4 py-2 flex items-center gap-2.5 text-xs font-semibold text-[#475569] cursor-pointer transition-colors">
+            <div className="bg-[#F8FAFC] border border-[#E6EAF0] hover:border-gray-300 rounded-xl px-3 md:px-4 py-2 hidden sm:flex items-center gap-2.5 text-xs font-semibold text-[#475569] cursor-pointer transition-colors">
               <Calendar size={14} className="text-[#64748B]" />
-              <span>26 de maio de 2025</span>
+              <span className="hidden md:inline">26 de maio de 2025</span>
               <ChevronDown size={12} className="text-[#94A3B8]" />
             </div>
 
             {/* Filter Toggle Button */}
-            <button className="bg-white border border-[#E6EAF0] hover:bg-slate-50 rounded-xl px-4 py-2 flex items-center gap-2 text-xs font-semibold text-[#475569] transition-all cursor-pointer">
+            <button className="bg-white border border-[#E6EAF0] hover:bg-slate-50 rounded-xl px-3 md:px-4 py-2 hidden sm:flex items-center gap-2 text-xs font-semibold text-[#475569] transition-all cursor-pointer">
               <SlidersHorizontal size={14} className="text-[#64748B]" />
-              <span>Filtros</span>
+              <span className="hidden md:inline">Filtros</span>
             </button>
 
             {/* Notification Badge with "3" */}
@@ -369,12 +407,12 @@ export default function AdminLayout({ children }: LayoutProps) {
         </header>
 
         {/* Dynamic Route Content */}
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">
           {children}
         </main>
 
         {/* Universal Admin Footer */}
-        <footer className="py-6 border-t border-[#E6EAF0] bg-white text-center select-none text-[12px] text-[#94A3B8]">
+        <footer className="py-6 px-4 border-t border-[#E6EAF0] bg-white text-center select-none text-[12px] text-[#94A3B8]">
           © 2025 Malote Saúde — Sistema de Gestão de Entregas por Malote. Todos os direitos reservados.
         </footer>
 

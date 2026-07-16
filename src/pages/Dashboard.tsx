@@ -423,7 +423,7 @@ export default function Dashboard() {
             </p>
           </div>
 
-          <div className="flex items-center gap-6 my-4">
+          <div className="flex flex-col sm:flex-row items-center gap-6 my-4">
             {/* Donut Chart */}
             <div className="relative w-40 h-40 shrink-0">
               <ResponsiveContainer width="100%" height="100%">
@@ -460,7 +460,7 @@ export default function Dashboard() {
             </div>
 
             {/* Custom Interactive Legend */}
-            <div className="flex-1 space-y-1.5">
+            <div className="w-full sm:w-auto sm:flex-1 space-y-1.5">
               {pieChartData.map((item, index) => (
                 <button
                   key={index}

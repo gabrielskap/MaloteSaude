@@ -333,7 +333,7 @@ export default function DetalheEntrega() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="p-0 lg:p-6 max-w-7xl mx-auto space-y-6">
       
       {/* 1. Header Navigation */}
       <div className="flex flex-col gap-1.5">
@@ -357,8 +357,8 @@ export default function DetalheEntrega() {
             <span className="text-[22px] font-semibold text-slate-900 tracking-tight leading-none">
               {entrega.codigo}
             </span>
-            
-            <div className="flex items-center gap-2">
+
+            <div className="flex flex-wrap items-center gap-2">
               <span className={`inline-flex items-center text-xs font-bold px-2.5 py-1 rounded-full ${
                 entrega.status === 'Entregue' 
                   ? 'bg-emerald-50 text-emerald-700'
@@ -491,7 +491,7 @@ export default function DetalheEntrega() {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 pt-5 text-xs">
           
           {/* Malote */}
-          <div className="flex flex-col gap-1 pr-4 md:border-r border-slate-100">
+          <div className="flex flex-col gap-1 pr-4 min-w-0 md:border-r border-slate-100">
             <span className="font-bold text-slate-400 uppercase text-[9px] tracking-wider">Malote Origem</span>
             <button 
               onClick={() => navigate(`/malotes/${entrega.maloteId}`)}
@@ -502,7 +502,7 @@ export default function DetalheEntrega() {
           </div>
 
           {/* Cliente */}
-          <div className="flex flex-col gap-1 pr-4 sm:border-r border-slate-100">
+          <div className="flex flex-col gap-1 pr-4 min-w-0 sm:border-r border-slate-100">
             <span className="font-bold text-slate-400 uppercase text-[9px] tracking-wider">Cliente Contratante</span>
             <span className="font-bold text-slate-700 truncate" title={cliente?.nome}>
               {cliente ? cliente.nome : 'Hospital São Lucas'}
@@ -510,7 +510,7 @@ export default function DetalheEntrega() {
           </div>
 
           {/* Tipo do item */}
-          <div className="flex flex-col gap-1 pr-4 md:border-r border-slate-100">
+          <div className="flex flex-col gap-1 pr-4 min-w-0 md:border-r border-slate-100">
             <span className="font-bold text-slate-400 uppercase text-[9px] tracking-wider">Tipo do Item</span>
             <div className="flex items-center gap-1.5 font-bold text-slate-700">
               {entrega.tipoItem === 'Cartão' ? (
@@ -523,7 +523,7 @@ export default function DetalheEntrega() {
           </div>
 
           {/* Prioridade */}
-          <div className="flex flex-col gap-1 pr-4 sm:border-r border-slate-100">
+          <div className="flex flex-col gap-1 pr-4 min-w-0 sm:border-r border-slate-100">
             <span className="font-bold text-slate-400 uppercase text-[9px] tracking-wider">Prioridade</span>
             <div className="flex items-center gap-1.5 font-bold">
               <span className={`w-2 h-2 rounded-full ${
@@ -558,7 +558,7 @@ export default function DetalheEntrega() {
         <div className="lg:col-span-2 space-y-6">
           
           {/* Tab buttons */}
-          <div className="flex border-b border-[#E6EAF0]">
+          <div className="flex border-b border-[#E6EAF0] overflow-x-auto whitespace-nowrap">
             <button 
               onClick={() => setActiveTab('timeline')}
               className={`px-5 py-3 text-xs font-bold transition-all border-b-2 cursor-pointer flex items-center gap-2 ${
