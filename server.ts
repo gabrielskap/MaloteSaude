@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import compression from "compression";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
@@ -9,8 +10,13 @@ dotenv.config();
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
-// Increase limit to allow base64 images
-app.use(express.json({ limit: "15mb" }));
+// Gzip/brotli-negotiated compression for all responses (static bundle + API)
+app.use(compression());
+
+// Default body limit for regular JSON requests; /api/ocr overrides this
+// below with its own (smaller) limit so a large image upload can't block
+// the single Node event loop for longer than necessary.
+app.use(express.json({ limit: "1mb" }));
 
 // Initialize GoogleGenAI SDK
 const apiKey = process.env.GEMINI_API_KEY;
@@ -26,7 +32,9 @@ const ai = apiKey
   : null;
 
 // API endpoint for OCR
-app.post("/api/ocr", async (req, res) => {
+// Uses its own (reduced) body limit instead of the global 1mb default, since
+// this is the only route that needs to accept base64-encoded images.
+app.post("/api/ocr", express.json({ limit: "6mb" }), async (req, res) => {
   try {
     const { imageBase64, mimeType } = req.body;
 
@@ -170,7 +178,12 @@ async function bootstrap() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), "dist");
-    app.use(express.static(distPath));
+    // Vite fingerprints built asset filenames with a content hash, so it's
+    // safe to let browsers cache them aggressively. index.html must NOT be
+    // cached the same way (index: false) — it references those hashed
+    // filenames, and caching it for a year would leave clients stuck on a
+    // stale index.html pointing at chunks a new deploy has already removed.
+    app.use(express.static(distPath, { maxAge: "1y", immutable: true, index: false }));
     app.get("*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
     });

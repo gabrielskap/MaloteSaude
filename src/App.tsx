@@ -1,31 +1,40 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { MaloteProvider } from './context/MaloteContext';
 import AdminLayout from './components/Layout';
 
-// Pages
-import Dashboard from './pages/Dashboard';
-import Malotes from './pages/Malotes';
-import NovoMalote from './pages/NovoMalote';
-import DetalheMalote from './pages/DetalheMalote';
-import OcrRevisao from './pages/OcrRevisao';
-import ManualItensNovo from './pages/ManualItensNovo';
-import Entregas from './pages/Entregas';
-import DetalheEntrega from './pages/DetalheEntrega';
-import RegistrarTentativa from './pages/RegistrarTentativa';
-import Distribuicao from './pages/Distribuicao';
-import Pendencias from './pages/Pendencias';
-import Motoboys from './pages/Motoboys';
-import Faturamento from './pages/Faturamento';
-import Relatorios from './pages/Relatorios';
-import Configuracoes from './pages/Configuracoes';
-import RastreioPublico from './pages/RastreioPublico';
-import MinhasEntregas from './pages/MinhasEntregas';
+// Pages (lazy-loaded per route so the initial bundle stays small)
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Malotes = lazy(() => import('./pages/Malotes'));
+const NovoMalote = lazy(() => import('./pages/NovoMalote'));
+const DetalheMalote = lazy(() => import('./pages/DetalheMalote'));
+const OcrRevisao = lazy(() => import('./pages/OcrRevisao'));
+const ManualItensNovo = lazy(() => import('./pages/ManualItensNovo'));
+const Entregas = lazy(() => import('./pages/Entregas'));
+const DetalheEntrega = lazy(() => import('./pages/DetalheEntrega'));
+const RegistrarTentativa = lazy(() => import('./pages/RegistrarTentativa'));
+const Distribuicao = lazy(() => import('./pages/Distribuicao'));
+const Pendencias = lazy(() => import('./pages/Pendencias'));
+const Motoboys = lazy(() => import('./pages/Motoboys'));
+const Faturamento = lazy(() => import('./pages/Faturamento'));
+const Relatorios = lazy(() => import('./pages/Relatorios'));
+const Configuracoes = lazy(() => import('./pages/Configuracoes'));
+const RastreioPublico = lazy(() => import('./pages/RastreioPublico'));
+const MinhasEntregas = lazy(() => import('./pages/MinhasEntregas'));
+
+function RouteFallback() {
+  return (
+    <div className="flex items-center justify-center min-h-[40vh] text-sm font-semibold text-slate-400">
+      Carregando...
+    </div>
+  );
+}
 
 export default function App() {
   return (
     <MaloteProvider>
       <Router>
+        <Suspense fallback={<RouteFallback />}>
         <Routes>
           {/* Public / Companion views - Out of the standard admin layout */}
           <Route path="/rastreio" element={<RastreioPublico />} />
@@ -182,6 +191,7 @@ export default function App() {
           {/* Catch-all redirect to Dashboard */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </Suspense>
       </Router>
     </MaloteProvider>
   );
